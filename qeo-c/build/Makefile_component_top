@@ -577,7 +577,7 @@ $(COMPONENT)_$(E)_coverage_test_run             : $($(COMPONENT)_$(E)_PREFIX)/co
 	$(genhtml) -t '$($(patsubst %_coverage_test_run,%_TEST_RUN,$@))' --legend --html-prolog $($(patsubst %_coverage_test_run,%_PREFIX,$@))/coverage_report/header.html -o $($(patsubst %_coverage_test_run,%_PREFIX,$@))/coverage_report `$(ls) $(addsuffix .info,$(patsubst %.o,%.gcno,$($(patsubst %_coverage_test_run,%_COVERAGE_FILES,$(@F))))) 2>/dev/null`
 ifneq ($(DESTDIR),)
 	$(mkdir) -p "$(DESTDIR)"
-	$(cp) -r $($(patsubst %_coverage_test_run,%_PREFIX,$@))/coverage_report "$(DESTDIR)"
+	$(cp) -R $($(patsubst %_coverage_test_run,%_PREFIX,$@))/coverage_report "$(DESTDIR)"
 endif
 
 
@@ -1107,7 +1107,7 @@ ifneq ($(strip $($(COMPONENT)_HEADERS_INSTALL)),)
 $(COMPONENT)_HEADERS_INSTALL+=&&
 endif
 
-$(COMPONENT)_HEADERS_INSTALL+=cp -prL $(patsubst %,%/*,$(filter $($(COMPONENT)_COMP_DIR/)api/headers%,$($(COMPONENT)_INTRA_INCLUDES))) $(incdir) && chmod -R +w $(incdir)
+$(COMPONENT)_HEADERS_INSTALL+=cp -pRL $(patsubst %,%/*,$(filter $($(COMPONENT)_COMP_DIR/)api/headers%,$($(COMPONENT)_INTRA_INCLUDES))) $(incdir) && chmod -R +w $(incdir)
 endif
 
 ifneq ($(strip $($(COMPONENT)_HEADERS_INSTALL)),)

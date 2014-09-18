@@ -111,7 +111,7 @@ PATTERN_RULES+=%/$(COMPONENT)-repository.tgz
 %/$(COMPONENT)-repository.tgz: $($(COMPONENT)_DOC_PARTS)
 	$(mkdir) -p $(OUTPUT_PREFIX/)src
 	$(rm) -rf $(OUTPUT_PREFIX/)src/$(patsubst %-repository.tgz,%,$(@F))
-	$(cp) -prL $(dir $($(patsubst %-repository.tgz,%,$(@F))_COMP_DIR)) $(OUTPUT_PREFIX/)src/$(patsubst %-repository.tgz,%,$(@F))
+	$(cp) -pRL $(dir $($(patsubst %-repository.tgz,%,$(@F))_COMP_DIR)) $(OUTPUT_PREFIX/)src/$(patsubst %-repository.tgz,%,$(@F))
 	find $(OUTPUT_PREFIX/)src/$(patsubst %-repository.tgz,%,$(@F)) -name "*~" -o -name "*.bak" -o -name ".cmake.state" -o -name ".abe.*" -o -name "*.clearcase" -o -name "*.search_path" -o -name "$(@F)" | $(xargs) -r $(rm) -rf
 	for DIR in documentation patents licenses certifications $(tar) --owner=root --group=rootget; do $(mkdir) -p $(OUTPUT_PREFIX/)src/$(patsubst %-repository.tgz,%,$(@F))/metadata/$$DIR; done
 	for OP in build install clean; do $(cp) -p $(projectdir/)build/repository/MAKE_$$OP $(OUTPUT_PREFIX/)src/$(patsubst %-repository.tgz,%,$(@F)); done

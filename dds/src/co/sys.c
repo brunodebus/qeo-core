@@ -792,22 +792,41 @@ const char *sys_getenv (const char *var_name)
 
 #include <sys/time.h>
 
+#include <mach/clock.h>
+#include <mach/mach_types.h>
+#include <mach/mach_host.h>
+#include <mach/mach_port.h>
+
 #define CLOCK_MONOTONIC	0
 #define CLOCK_REALTIME	1
 
-/* clock_gettime is not implemented on OSX, simulate it using gettimeofday(). */
+/* clock_gettime is not implemented on OSX, use clock_get_time(). */
 
 int clock_gettime (int clk_id, struct timespec *t)
 {
-	struct timeval now;
-	int rv = gettimeofday (&now, NULL);
+  clock_serv_t cclock;
+  mach_timespec_t mts;
+  int osx_clk_id;
+  if (clk_id == CLOCK_MONOTONIC)
+  {
+    osx_clk_id = SYSTEM_CLOCK;
+  }
+  if (clk_id == CLOCK_REALTIME)
+  {
+    osx_clk_id = CALENDAR_CLOCK;
+  }
+  host_get_clock_service(mach_host_self(), osx_clk_id, &cclock);
+  int rv = clock_get_time(cclock, &mts);
+  mach_port_deallocate(mach_task_self(), cclock);
+  t->tv_sec = mts.tv_sec;
+  t->tv_nsec = mts.tv_nsec;
 
-	if (rv)
-		return (rv);
+  if (rv)
+  {
+    return (rv);
+  }
 
-	t->tv_sec  = now.tv_sec;
-	t->tv_nsec = now.tv_usec * 1000;
-	return (0);
+  return (0);
 }
 
 #endif

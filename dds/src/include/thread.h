@@ -120,6 +120,10 @@ void trc_lock_info (void);
 #define	lock_required(l)
 #endif
 
+#ifdef __MACH__
+# include <mach/mach_types.h>
+# undef thread_t
+#endif
 #define	thread_t		pthread_t
 #define thread_result_t		void *
 

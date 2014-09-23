@@ -34,11 +34,6 @@
 #include <qeo/log.h>
 #include "forwarder.h"
 
-#ifdef __MACH__
-#include <mach/clock.h>
-#include <mach/mach.h>
-#endif
-
 /* delay in milliseconds */
 #define UPNP_DELAY 2000
 
@@ -456,21 +451,17 @@ static void get_public_locator_callback(qeo_factory_t *factory)
     }
 }
 
+#ifdef __MACH__
+// On OS X, forward declare this function, it will be provided in sys.c
+#define CLOCK_REALTIME  1
+int clock_gettime (int clk_id, struct timespec *t);
+#endif
+
 static void update_timer(struct timespec *timer,
                          timer_type_t type,
                          int sec_period)
 {
-# ifdef __MACH__ // OS X does not have clock_gettime, use clock_get_time
-  clock_serv_t cclock;
-  mach_timespec_t mts;
-  host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
-  clock_get_time(cclock, &mts);
-  mach_port_deallocate(mach_task_self(), cclock);
-  timer[type].tv_sec = mts.tv_sec;
-  timer[type].tv_nsec = mts.tv_nsec;
-# else
-  clock_gettime(CLOCK_REALTIME, &timer[type]);
-# endif
+    clock_gettime(CLOCK_REALTIME, &timer[type]);
     timer[type].tv_sec += sec_period;
 }
 

@@ -451,6 +451,12 @@ static void get_public_locator_callback(qeo_factory_t *factory)
     }
 }
 
+#ifdef __MACH__
+// On OS X, forward declare this function, it will be provided in sys.c
+#define CLOCK_REALTIME  1
+int clock_gettime (int clk_id, struct timespec *t);
+#endif
+
 static void update_timer(struct timespec *timer,
                          timer_type_t type,
                          int sec_period)

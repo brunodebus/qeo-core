@@ -104,7 +104,7 @@ ifneq ($(qeo-native_DEBUG), 1)
 	$(foreach f,$(qeo-native.sdk.libs),$(cp) -P $(DEBUG_INSTALL_DIR)/${libdir}/lib$(f).so* $(qeo-native.sdk.dirInstallSymbols)/lib/$($(COMPONENT)_$(E)_CONFIGURATION_NAME) &&) /bin/true
 endif
 	$(mkdir) -p $(qeo-native.sdk.dirInstallAllHeaders)/include
-	$(cp) -rfP $(INSTALL_DIR)/${incdir}/* $(qeo-native.sdk.dirInstallAllHeaders)/include
+	$(cp) -RfP $(INSTALL_DIR)/${incdir}/* $(qeo-native.sdk.dirInstallAllHeaders)/include
 
 $($(COMPONENT)_$(E)_PREFIX)/$(COMPONENT)_sdk_lib_$(E).tgz: $(COMPONENT)_sdk
 	$(tar) --owner=root --group=root -czf $@ -C $(qeo-native.sdk.dirInstall) lib
